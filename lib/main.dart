@@ -15,7 +15,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  print('hrllo');
   Future<bool> checkFirstStart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? firstStartValue = prefs.getBool('firstStart');
@@ -28,6 +27,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print("hello");
     return FutureBuilder<bool>(
       future: checkFirstStart(),
       builder: (context, snapshot) {
