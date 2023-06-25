@@ -15,6 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  print('hrllo');
   Future<bool> checkFirstStart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? firstStartValue = prefs.getBool('firstStart');
