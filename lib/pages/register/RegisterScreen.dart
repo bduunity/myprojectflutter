@@ -152,7 +152,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                       textColor: Colors.white,
                     );
                   } else{
-                    socket.emit('register', jsonEncode({'data': 'Welcome!'}));
+                    socket.emit('register', jsonEncode({'email': email, 'password': password}));
                   }
                 },
                 child: const Text(
