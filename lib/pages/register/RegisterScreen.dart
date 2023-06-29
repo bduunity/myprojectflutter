@@ -5,13 +5,26 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:convert';
 
 class RegisterScreenHelper extends StatefulWidget {
-  const RegisterScreenHelper({super.key});
+  const RegisterScreenHelper({Key? key}) : super(key: key);
 
   @override
   State<RegisterScreenHelper> createState() => _RegisterScreenHelperState();
 }
 
 class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+  TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   Future<bool> checkInternetConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -26,6 +39,18 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
 
   @override
   Widget build(BuildContext context) {
+    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((_) {
+      print('Connected to the server');
+      // socket.emit('my event', jsonEncode({'data': 'Welcome!'}));
+    });
+
+    // Listen for 'server_response' events from the server
+    socket.on('server_response', (data) => print(data));
+
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -46,37 +71,38 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                     child: Image.asset('assets/images/bigLogo.png')),
               ),
             ),
-            const Padding(
+            Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TextField(
-                decoration: InputDecoration(
+                controller: _emailController,
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
                     hintText: 'Enter valid email id as abc@gmail.com'),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 15),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter secure password'),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 40),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-
+                controller: _confirmPasswordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Confirm Password',
                     hintText: 'Confirm secure password'),
@@ -87,6 +113,35 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
               width: 250,
               child: ElevatedButton(
                 onPressed: () async {
+
+                  final email = _emailController.text;
+                  final password = _passwordController.text;
+                  final confirmPassword = _confirmPasswordController.text;
+
+                  if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                    Fluttertoast.showToast(
+                      msg: "Please fill all the fields!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                    );
+                    return;
+                  }
+
+                  if (password != confirmPassword) {
+                    Fluttertoast.showToast(
+                      msg: "Passwords not equal!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                    );
+                    return;
+                  }
+
                   if ((await checkInternetConnectivity()) == false){
                     Fluttertoast.showToast(
                       msg: "NO INTERNET CONNECTION!",
@@ -97,17 +152,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                       textColor: Colors.white,
                     );
                   } else{
-                    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
-                      'transports': ['websocket'],
-                    });
-
-                    socket.onConnect((_) {
-                      print('Connected to the server');
-                      socket.emit('my event', jsonEncode({'data': 'Welcome!'}));
-                    });
-
-                    // Listen for 'server_response' events from the server
-                    socket.on('server_response', (data) => print(data));
+                    socket.emit('register', jsonEncode({'data': 'Welcome!'}));
                   }
                 },
                 child: const Text(
