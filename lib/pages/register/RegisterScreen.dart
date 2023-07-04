@@ -136,6 +136,9 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                   final confirmPassword = _confirmPasswordController.text;
 
                   if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                    setState(() { // <--- stop loading
+                      _isLoading = false;
+                    });
                     Fluttertoast.showToast(
                       msg: "Please fill all the fields!",
                       toastLength: Toast.LENGTH_SHORT,
@@ -148,6 +151,9 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                   }
 
                   if (password != confirmPassword) {
+                    setState(() { // <--- stop loading
+                      _isLoading = false;
+                    });
                     Fluttertoast.showToast(
                       msg: "Passwords not equal!",
                       toastLength: Toast.LENGTH_SHORT,
@@ -160,6 +166,9 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                   }
 
                   if ((await checkInternetConnectivity()) == false){
+                    setState(() { // <--- stop loading
+                      _isLoading = false;
+                    });
                     Fluttertoast.showToast(
                       msg: "NO INTERNET CONNECTION!",
                       toastLength: Toast.LENGTH_SHORT,
@@ -170,6 +179,9 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                     );
                   } else{
                     socket.emit('register', jsonEncode({'email': email, 'password': password}));
+                    setState(() { // <--- stop loading
+                      _isLoading = false;
+                    });
                   }
                 },
                 child: const Text(
@@ -178,6 +190,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                 ),
               ),
             ),
+
           ],
         ),
       ),
