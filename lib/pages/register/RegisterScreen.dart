@@ -12,7 +12,7 @@ class RegisterScreenHelper extends StatefulWidget {
 }
 
 class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
-
+  bool _isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -49,7 +49,22 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
     });
 
     // Listen for 'server_response' events from the server
-    socket.on('server_response', (data) => print(data));
+    socket.on('message', (message) {
+      try {
+        print(message['message']);
+        Fluttertoast.showToast(
+          msg: message['message'],
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      } catch (error) {
+        print('Error parsing JSON: $error');
+      }
+    });
+
 
     return  Scaffold(
       backgroundColor: Colors.white,
@@ -113,7 +128,9 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
               width: 250,
               child: ElevatedButton(
                 onPressed: () async {
-
+                  setState(() {
+                    _isLoading = true;
+                  });
                   final email = _emailController.text;
                   final password = _passwordController.text;
                   final confirmPassword = _confirmPasswordController.text;
