@@ -12,11 +12,13 @@ class RegisterScreenHelper extends StatefulWidget {
 }
 
 class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
-  bool _isLoading = false;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
   TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -48,7 +50,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
       // socket.emit('my event', jsonEncode({'data': 'Welcome!'}));
     });
 
-    // Listen for 'server_response' events from the server
     socket.on('message', (message) {
       try {
         print(message['message']);
@@ -71,130 +72,150 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
       appBar: AppBar(
         title: const Text("Registration Page"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-              child: Center(
-                child: SizedBox(
-                    width: 200,
-                    height: 150,
-                    /*decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('assets/images/bigLogo.png')),
-              ),
-            ),
-            Padding(
-              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15, bottom: 15),
-              //padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15, bottom: 40),
-              //padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-                controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Confirm Password',
-                    hintText: 'Confirm secure password'),
-              ),
-            ),
-            SizedBox(
-              height: 50,
-              width: 250,
-              child: ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  final email = _emailController.text;
-                  final password = _passwordController.text;
-                  final confirmPassword = _confirmPasswordController.text;
-
-                  if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-                    setState(() { // <--- stop loading
-                      _isLoading = false;
-                    });
-                    Fluttertoast.showToast(
-                      msg: "Please fill all the fields!",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
-                    return;
-                  }
-
-                  if (password != confirmPassword) {
-                    setState(() { // <--- stop loading
-                      _isLoading = false;
-                    });
-                    Fluttertoast.showToast(
-                      msg: "Passwords not equal!",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
-                    return;
-                  }
-
-                  if ((await checkInternetConnectivity()) == false){
-                    setState(() { // <--- stop loading
-                      _isLoading = false;
-                    });
-                    Fluttertoast.showToast(
-                      msg: "NO INTERNET CONNECTION!",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
-                  } else{
-                    socket.emit('register', jsonEncode({'email': email, 'password': password}));
-                    setState(() { // <--- stop loading
-                      _isLoading = false;
-                    });
-                  }
-                },
-                child: const Text(
-                  'Register',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  child: Center(
+                    child: SizedBox(
+                        width: 200,
+                        height: 150,
+                        /*decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(50.0)),*/
+                        child: Image.asset('assets/images/bigLogo.png')),
+                  ),
                 ),
-              ),
-            ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: TextField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
+                        hintText: 'Enter valid email id as abc@gmail.com'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 15),
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                        hintText: 'Enter secure password'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 40),
+                  child: TextField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Confirm Password',
+                        hintText: 'Confirm secure password'),
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                  width: 250,
+                  child: ElevatedButton(
+                    onPressed: () async {
 
-          ],
-        ),
+                      final email = _emailController.text;
+                      final password = _passwordController.text;
+                      final confirmPassword = _confirmPasswordController.text;
+
+                      if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        Fluttertoast.showToast(
+                          msg: "Please fill all the fields!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
+
+                      if (password != confirmPassword) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        Fluttertoast.showToast(
+                          msg: "Passwords not equal!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
+
+                      if ((await checkInternetConnectivity()) == false){
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        Fluttertoast.showToast(
+                          msg: "NO INTERNET CONNECTION!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+
+                      } else{
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        socket.emit('register', jsonEncode({'email': email, 'password': password}));
+                        socket.on('register_response', (message) {
+                          try {
+                            print(message['message']);
+                            Fluttertoast.showToast(
+                              msg: message['message'],
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                            );
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          } catch (error) {
+                            print('Error parsing JSON: $error');
+                          }
+                        });
+                      }
+                    },
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
       ),
     );
   }
 }
-
