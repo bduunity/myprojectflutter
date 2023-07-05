@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
 import 'package:myprojectflutter/pages/register/ConfirmEmailScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -197,7 +196,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                               prefs.setString('email', email);
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email)),
+                                MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email, password_txt: password)),
                               );
                             }
                           } catch (error) {

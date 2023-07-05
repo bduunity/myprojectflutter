@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
-import 'package:myprojectflutter/pages/register/RegisterScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ConfirmEmailScreen extends StatefulWidget {
-  const ConfirmEmailScreen({Key? key, required this.email_txt}) : super(key: key);
-  final String email_txt;
+  const ConfirmEmailScreen({Key? key, required this.email_txt, required this.password_txt}) : super(key: key);
+  final String email_txt, password_txt;
   @override
   State<ConfirmEmailScreen> createState() => _ConfirmEmailScreenState();
 }
@@ -60,11 +63,55 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
               width: 250,
               child: ElevatedButton(
                 onPressed: () {
+                  final emailConfirm = _emailConfirmController.text;
+                  if (emailConfirm.isEmpty) {
+                    Fluttertoast.showToast(
+                      msg: "Please fill all the fields!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                    );
+                    return;
+                  } else{
+                    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+                      'transports': ['websocket'],
+                    });
+                    socket.emit('email_confirm', jsonEncode({'email_code': emailConfirm, 'email': email}));
+
+                    socket.on('email_confirm_response', (message) async {
+                      try {
+                        Fluttertoast.showToast(
+                          msg: message['message'],
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        setState(() {
+                          _isLoading = false;
+                        });
+
+                        if(message['message'] == "Confirm your Email!"){
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('email', email);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email, password_txt: password)),
+                          );
+                        }
+                      } catch (error) {
+                        print('Error parsing JSON: $error');
+                      }
+                    });
+                  }
                   Navigator.push(
                       context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 child: const Text(
-                  'Login',
+                  'Confirm',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
