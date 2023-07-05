@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:convert';
 
@@ -134,9 +135,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                       final confirmPassword = _confirmPasswordController.text;
 
                       if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-                        setState(() {
-                          _isLoading = false;
-                        });
                         Fluttertoast.showToast(
                           msg: "Please fill all the fields!",
                           toastLength: Toast.LENGTH_SHORT,
@@ -149,9 +147,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                       }
 
                       if (password != confirmPassword) {
-                        setState(() {
-                          _isLoading = false;
-                        });
                         Fluttertoast.showToast(
                           msg: "Passwords not equal!",
                           toastLength: Toast.LENGTH_SHORT,
@@ -163,10 +158,11 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                         return;
                       }
 
+                      setState(() {
+                        _isLoading = true;
+                      });
+
                       if ((await checkInternetConnectivity()) == false){
-                        setState(() {
-                          _isLoading = false;
-                        });
                         Fluttertoast.showToast(
                           msg: "NO INTERNET CONNECTION!",
                           toastLength: Toast.LENGTH_SHORT,
@@ -176,14 +172,13 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                           textColor: Colors.white,
                         );
 
-                      } else{
                         setState(() {
-                          _isLoading = true;
+                          _isLoading = false;
                         });
+                      } else{
                         socket.emit('register', jsonEncode({'email': email, 'password': password}));
                         socket.on('register_response', (message) {
                           try {
-                            print(message['message']);
                             Fluttertoast.showToast(
                               msg: message['message'],
                               toastLength: Toast.LENGTH_SHORT,
@@ -195,6 +190,14 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                             setState(() {
                               _isLoading = false;
                             });
+
+                            if(message['message'] == "Registration successful!"){
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                              );
+                            }
                           } catch (error) {
                             print('Error parsing JSON: $error');
                           }
