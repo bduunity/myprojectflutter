@@ -190,7 +190,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                               _isLoading = false;
                             });
 
-                            if(message['message'] == "Registration successful!"){
+                            if(message['message'] == "Confirm your Email!"){
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => const HomeScreen()),
