@@ -97,10 +97,6 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                         if(message['message'] == "Confirm your Email!"){
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.setString('email', email);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email, password_txt: password)),
-                          );
                         }
                       } catch (error) {
                         print('Error parsing JSON: $error');

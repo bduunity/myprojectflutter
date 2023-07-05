@@ -192,8 +192,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                             });
 
                             if(message['message'] == "Confirm your Email!"){
-                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                              prefs.setString('email', email);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email, password_txt: password)),
