@@ -16,8 +16,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-  TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -192,7 +191,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                             });
 
                             if(message['message'] == "Registration successful!"){
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => const HomeScreen()),
