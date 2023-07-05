@@ -2,6 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
+import 'package:myprojectflutter/pages/register/ConfirmEmailScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:convert';
 
@@ -176,7 +178,7 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                         });
                       } else{
                         socket.emit('register', jsonEncode({'email': email, 'password': password}));
-                        socket.on('register_response', (message) {
+                        socket.on('register_response', (message) async {
                           try {
                             Fluttertoast.showToast(
                               msg: message['message'],
@@ -191,9 +193,11 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                             });
 
                             if(message['message'] == "Confirm your Email!"){
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.setString('email', email);
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email)),
                               );
                             }
                           } catch (error) {
