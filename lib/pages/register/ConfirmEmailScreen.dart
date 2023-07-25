@@ -26,6 +26,12 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    email = widget.email_txt;  // Assign the email variable here
+  }
+
+  @override
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.white,
