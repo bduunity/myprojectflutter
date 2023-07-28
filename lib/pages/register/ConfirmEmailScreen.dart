@@ -15,6 +15,7 @@ class ConfirmEmailScreen extends StatefulWidget {
 
 class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   late final String email;
+  late final String passwd;
   final TextEditingController _emailConfirmController = TextEditingController();
 
   bool _isLoading = false;
@@ -29,6 +30,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   void initState() {
     super.initState();
     email = widget.email_txt;
+    passwd = widget.password_txt;
   }
 
   @override
@@ -84,7 +86,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                     IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
                       'transports': ['websocket'],
                     });
-                    socket.emit('email_confirm', jsonEncode({'email_code': emailConfirm, 'email': email}));
+                    socket.emit('email_confirm', jsonEncode({'email_code': emailConfirm, 'email': email, 'passwd': passwd}));
 
                     socket.on('email_confirm_response', (message) async {
                       try {
@@ -103,6 +105,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                         if(message['status']){
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.setString('email', email);
+                          prefs.setString('token', message['token']);
                           Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                         }
                       } catch (error) {
