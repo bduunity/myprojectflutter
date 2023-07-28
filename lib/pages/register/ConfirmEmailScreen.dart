@@ -28,7 +28,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   @override
   void initState() {
     super.initState();
-    email = widget.email_txt;  // Assign the email variable here
+    email = widget.email_txt;
   }
 
   @override
@@ -103,14 +103,13 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                         if(message['status']){
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.setString('email', email);
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                         }
                       } catch (error) {
                         print('Error parsing JSON: $error');
                       }
                     });
                   }
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 child: const Text(
                   'Confirm',
