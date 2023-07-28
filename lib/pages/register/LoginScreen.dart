@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
 import 'package:myprojectflutter/pages/register/RegisterScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+
 class LoginScreenHelper extends StatefulWidget {
   const LoginScreenHelper({Key? key}) : super(key: key);
 
@@ -25,6 +31,14 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
 
   @override
   Widget build(BuildContext context) {
+    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((_) {
+      print('Connected to the server');
+      // socket.emit('my event', jsonEncode({'data': 'Welcome!'}));
+    });
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -87,6 +101,36 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
                     );
                     return;
                   }
+
+                  socket.emit('user_login', jsonEncode({'email': email, 'password': password}));
+
+                  socket.on('login_response', (message) async {
+                    try {
+                      Fluttertoast.showToast(
+                        msg: message['message'],
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                      );
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      if(message['status']){
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString('email', email);
+                        // prefs.setString('token', message['token']);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    } catch (error) {
+                      print('Error parsing JSON: $error');
+                    }
+                  });
 
                 },
                 child: const Text(
