@@ -21,6 +21,15 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
 
   bool _isLoading = false;
 
+  bool isValidEmail(String email) {
+    final RegExp regex = RegExp(
+        r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
+    );
+
+    return regex.hasMatch(email);
+  }
+
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -129,10 +138,33 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                   width: 250,
                   child: ElevatedButton(
                     onPressed: () async {
-
                       final email = _emailController.text;
+
+                      if (!isValidEmail(email)){
+                        Fluttertoast.showToast(
+                          msg: "Email incorrect!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
                       final password = _passwordController.text;
                       final confirmPassword = _confirmPasswordController.text;
+
+                      if(password.length < 6) {
+                        Fluttertoast.showToast(
+                          msg: "Password is less than 6 characters",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
 
                       if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
                         Fluttertoast.showToast(
