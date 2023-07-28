@@ -100,7 +100,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                           _isLoading = false;
                         });
 
-                        if(message['message'] == "Confirm your Email!"){
+                        if(message['status']){
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.setString('email', email);
                         }
