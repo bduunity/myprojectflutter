@@ -79,7 +79,8 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Registration Page"),
+        elevation: 4,
+        title: const Text("User Registration"),
       ),
       body: Stack(
         children: [
@@ -136,6 +137,10 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                   height: 50,
                   width: 250,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                    ),
                     onPressed: () async {
                       final email = _emailController.text;
 
@@ -236,7 +241,6 @@ class _RegisterScreenHelperState extends State<RegisterScreenHelper> {
                     },
                     child: const Text(
                       'Register',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
                   ),
                 ),

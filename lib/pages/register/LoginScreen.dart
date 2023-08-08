@@ -42,7 +42,8 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Login Page"),
+        title: const Text("Login"),
+        elevation: 4,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -86,6 +87,10 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
             Padding(
               padding: const EdgeInsets.all(8.0), // Adjust the padding values as needed
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
                 onPressed: () {
                   final email = _emailController.text;
                   final password = _passwordController.text;
@@ -135,7 +140,6 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
                 },
                 child: const Text(
                   'Forgot Password',
-                  style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),
             ),
@@ -143,13 +147,16 @@ class _LoginScreenHelperState extends State<LoginScreenHelper> {
               height: 50,
               width: 250,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
                 onPressed: () {
                   Navigator.push(
                       context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 child: const Text(
                   'Login',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
             ),

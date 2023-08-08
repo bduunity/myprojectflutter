@@ -10,6 +10,8 @@ class AddDevice extends StatefulWidget {
   State<AddDevice> createState() => _AddDeviceState();
 }
 class _AddDeviceState extends State<AddDevice> {
+  NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.alwaysShow;
+  int currentPageIndex = 0;
   List<String> flattenedList = [];
   late IO.Socket socket;
 
@@ -55,8 +57,9 @@ class _AddDeviceState extends State<AddDevice> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 4,
+        shadowColor: Theme.of(context).shadowColor,
         title: const Text("My Devices"),
       ),
       body: ListView.builder(
@@ -69,8 +72,39 @@ class _AddDeviceState extends State<AddDevice> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Add Child'),
-        icon: const Icon(Icons.add_reaction),
+        icon: const Icon(Icons.add),
         onPressed: () {},
+      ),
+      bottomNavigationBar: NavigationBar(
+        labelBehavior: labelBehavior,
+        selectedIndex: currentPageIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home_filled),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.account_tree_rounded),
+            icon: Icon(Icons.account_tree_outlined),
+            label: 'Features',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.location_on),
+            icon: Icon(Icons.location_on_outlined),
+            label: 'Location',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

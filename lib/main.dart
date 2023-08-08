@@ -38,8 +38,8 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Sample Activity',
             theme: ThemeData(
-              // useMaterial3: true,
-              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
+              useMaterial3: true,
+                colorSchemeSeed: Colors.blue[700]
             ),
             home: firstStartValue ? const AddDevice() : const LoginScreenHelper(),
           );

@@ -39,6 +39,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 4,
         title: const Text("Login Page"),
       ),
       body: SingleChildScrollView(
@@ -71,6 +72,10 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
               height: 50,
               width: 250,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
                 onPressed: () {
                   final emailConfirm = _emailConfirmController.text;
                   if (emailConfirm.isEmpty) {
