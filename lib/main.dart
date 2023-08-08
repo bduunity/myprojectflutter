@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
-import 'package:myprojectflutter/pages/add_device/AddDevice.dart';
+import 'package:myprojectflutter/pages/add_device/ListDevice.dart';
 import 'package:myprojectflutter/pages/register/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
