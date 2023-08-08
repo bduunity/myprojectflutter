@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
+import 'package:myprojectflutter/pages/add_device/add_device.dart';
 import 'package:myprojectflutter/pages/register/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
               // useMaterial3: true,
               colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
             ),
-            home: firstStartValue ? const HomeScreen() : const LoginScreenHelper(),
+            home: firstStartValue ? const AddDevice() : const LoginScreenHelper(),
           );
         } else {
           // Handle loading state if needed

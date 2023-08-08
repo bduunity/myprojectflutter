@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
+import 'package:myprojectflutter/pages/add_device/add_device.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -107,7 +108,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                           prefs.setString('email', email);
                           prefs.setString('token', message['token']);
                           prefs.setBool('firstStart', true);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const HomeScreen()), (Route<dynamic> route) => false);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const AddDevice()), (Route<dynamic> route) => false);
                         }
                       } catch (error) {
                         print('Error parsing JSON: $error');
