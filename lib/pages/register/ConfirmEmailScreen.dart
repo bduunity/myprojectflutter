@@ -106,7 +106,8 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.setString('email', email);
                           prefs.setString('token', message['token']);
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                          prefs.setBool('firstStart', true);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const HomeScreen()), (Route<dynamic> route) => false);
                         }
                       } catch (error) {
                         print('Error parsing JSON: $error');
