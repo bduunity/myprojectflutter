@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
-import 'package:myprojectflutter/pages/add_device/add_device.dart';
+import 'package:myprojectflutter/pages/add_device/AddDevice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
