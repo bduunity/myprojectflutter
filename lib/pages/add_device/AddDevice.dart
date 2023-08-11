@@ -1,119 +1,188 @@
-import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myprojectflutter/pages/register/ConfirmEmailScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'dart:convert';
 
 class AddDevice extends StatefulWidget {
-  const AddDevice({super.key});
+  const AddDevice({Key? key}) : super(key: key);
 
   @override
   State<AddDevice> createState() => _AddDeviceState();
 }
+
 class _AddDeviceState extends State<AddDevice> {
-  NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.alwaysShow;
-  int currentPageIndex = 0;
-  List<String> flattenedList = [];
-  late IO.Socket socket;
-  final TextEditingController _emailController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
+  final TextEditingController _chCodeController = TextEditingController();
 
-    socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
-      'transports': ['websocket'],
-    });
+  bool _isLoading = false;
+
+  bool isValidEmail(String code) {
+    final RegExp regex = RegExp(
+        r"^[0-9]+$"
+    );
+
+    return regex.hasMatch(code);
   }
+
 
   @override
   void dispose() {
-    socket.dispose();  // Close the socket connection
+    _chCodeController.dispose();
     super.dispose();
   }
 
+  Future<bool> checkInternetConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((_) {
+      print('Connected to the server');
+      // socket.emit('my event', jsonEncode({'data': 'Welcome!'}));
+    });
+
+    return  Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 4,
-        shadowColor: Theme.of(context).shadowColor,
         title: const Text("Add Device"),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Padding(
-                //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: Text(
-                  'Enter generated code from child app',
-                  style: TextStyle(fontSize: 20), // Adjust the style as needed
-                ),
-              ),
-              Padding(
-                //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'CODE',
-                      hintText: 'Enter childs code'),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                width: 250,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                  ),
-                  onPressed: () {
-                  },
-                  child: const Text(
-                    'ADD',
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  child: Center(
+                    child: SizedBox(
+                        width: 200,
+                        height: 150,
+                        /*decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(50.0)),*/
+                        child: Image.asset('assets/images/bigLogo.png')),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 130,
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: TextField(
+                    controller: _chCodeController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Code',
+                        hintText: 'Enter chils code'),
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                  width: 250,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                    ),
+                    onPressed: () async {
+                      final code = _chCodeController.text;
+
+                      if (!isValidEmail(code)){
+                        Fluttertoast.showToast(
+                          msg: "Only numbers!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
+
+                      if (code.isEmpty) {
+                        Fluttertoast.showToast(
+                          msg: "Please fill the field!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                        return;
+                      }
+
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      if ((await checkInternetConnectivity()) == false){
+                        Fluttertoast.showToast(
+                          msg: "NO INTERNET CONNECTION!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      } else{
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        String? email = prefs.getString('email');
+                        socket.emit('add_child', jsonEncode({'code': code, 'email': email}));
+                        socket.on('add_child_response', (message) async {
+                          try {
+                            Fluttertoast.showToast(
+                              msg: message['message'],
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                            );
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            if(message['status']){
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => ConfirmEmailScreen(email_txt: email, password_txt: password)),
+                              // );
+                            }
+                          } catch (error) {
+                            print('Error parsing JSON: $error');
+                          }
+                        });
+                      }
+                    },
+                    child: const Text(
+                      'ADD',
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home_filled),
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.account_tree_rounded),
-            icon: Icon(Icons.account_tree_outlined),
-            label: 'Features',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.location_on),
-            icon: Icon(Icons.location_on_outlined),
-            label: 'Location',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle),
-            icon: Icon(Icons.account_circle_outlined),
-            label: 'Profile',
-          ),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
         ],
       ),
     );
