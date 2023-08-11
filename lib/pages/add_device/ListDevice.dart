@@ -49,6 +49,7 @@ class _ListDeviceState extends State<ListDevice> {
       }
   }
 
+
   @override
   void dispose() {
     socket.dispose();  // Close the socket connection
@@ -64,13 +65,13 @@ class _ListDeviceState extends State<ListDevice> {
         title: const Text("My Devices"),
       ),
       body: ListView.builder(
-          itemCount: flattenedList.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(flattenedList[index]),
-            );
-          }
-      ),
+             itemCount: flattenedList.length,
+             itemBuilder: (context, index) {
+               return ListTile(
+                 title: Text(flattenedList[index]),
+               );
+             }
+         ),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Add Child'),
         icon: const Icon(Icons.add),
