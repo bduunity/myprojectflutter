@@ -49,6 +49,19 @@ class _ListDeviceState extends State<ListDevice> {
       }
   }
 
+  Future<void> _refreshData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+
+    if (email != null) {
+      socket.emit('get_child_list', jsonEncode({'email': email}));
+    }
+
+    // Add a delay to simulate data fetching (if necessary)
+    // await Future.delayed(Duration(seconds: 2));
+  }
+
+
 
 
   @override
@@ -57,7 +70,6 @@ class _ListDeviceState extends State<ListDevice> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,15 +77,24 @@ class _ListDeviceState extends State<ListDevice> {
         elevation: 4,
         shadowColor: Theme.of(context).shadowColor,
         title: const Text("My Devices"),
+        actions: <Widget>[
+          IconButton(
+              onPressed: _refreshData,
+              icon: const Icon(Icons.refresh_sharp))
+        ],
       ),
-      body: ListView.builder(
-             itemCount: flattenedList.length,
-             itemBuilder: (context, index) {
-               return ListTile(
-                 title: Text(flattenedList[index]),
-               );
-             }
-         ),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: ListView.builder(
+          itemCount: flattenedList.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(flattenedList[index]),
+            );
+          },
+        ),
+      ),
+
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Add Child'),
         icon: const Icon(Icons.add),
