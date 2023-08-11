@@ -140,6 +140,7 @@ class _AddDeviceState extends State<AddDevice> {
                           textColor: Colors.white,
                         );
 
+
                         setState(() {
                           _isLoading = false;
                         });

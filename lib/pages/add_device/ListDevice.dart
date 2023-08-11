@@ -50,6 +50,7 @@ class _ListDeviceState extends State<ListDevice> {
   }
 
 
+
   @override
   void dispose() {
     socket.dispose();  // Close the socket connection
