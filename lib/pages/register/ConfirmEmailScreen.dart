@@ -113,7 +113,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                           prefs.setString('email', email);
                           prefs.setString('token', message['token']);
                           prefs.setBool('firstStart', true);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const AddDevice()), (Route<dynamic> route) => false);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const ListDevice()), (Route<dynamic> route) => false);
                         }
                       } catch (error) {
                         print('Error parsing JSON: $error');

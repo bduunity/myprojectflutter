@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:myprojectflutter/pages/add_device/AddDevice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class AddDevice extends StatefulWidget {
-  const AddDevice({super.key});
+class ListDevice extends StatefulWidget {
+  const ListDevice({super.key});
 
   @override
-  State<AddDevice> createState() => _AddDeviceState();
+  State<ListDevice> createState() => _ListDeviceState();
 }
-class _AddDeviceState extends State<AddDevice> {
+class _ListDeviceState extends State<ListDevice> {
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.alwaysShow;
   int currentPageIndex = 0;
   List<String> flattenedList = [];
@@ -73,7 +74,12 @@ class _AddDeviceState extends State<AddDevice> {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Add Child'),
         icon: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddDevice()),
+          );
+        },
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,

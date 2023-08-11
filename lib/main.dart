@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
               useMaterial3: true,
                 colorSchemeSeed: Colors.blue[700]
             ),
-            home: firstStartValue ? const AddDevice() : const LoginScreenHelper(),
+            home: firstStartValue ? const ListDevice() : const LoginScreenHelper(),
           );
         } else {
           // Handle loading state if needed
