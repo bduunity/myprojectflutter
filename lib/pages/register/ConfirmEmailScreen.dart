@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myprojectflutter/config.dart';
 import 'package:myprojectflutter/pages/activities/HomeScreen.dart';
 import 'package:myprojectflutter/pages/add_device/ListDevice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,7 +90,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                     );
                     return;
                   } else{
-                    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+                    IO.Socket socket = IO.io(Configs.server_ip, <String, dynamic>{
                       'transports': ['websocket'],
                     });
                     socket.emit('email_confirm', jsonEncode({'email_code': emailConfirm, 'email': email, 'passwd': passwd}));

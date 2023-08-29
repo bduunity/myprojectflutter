@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:myprojectflutter/config.dart';
 import 'package:myprojectflutter/pages/add_device/AddDevice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -20,7 +21,7 @@ class _ListDeviceState extends State<ListDevice> {
   void initState() {
     super.initState();
 
-    socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+    socket = IO.io(Configs.server_ip, <String, dynamic>{
       'transports': ['websocket'],
     });
     socket.onConnect(_handleOnConnect);

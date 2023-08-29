@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myprojectflutter/config.dart';
 import 'package:myprojectflutter/pages/add_device/ListDevice.dart';
 import 'package:myprojectflutter/pages/register/ConfirmEmailScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,7 @@ class _AddDeviceState extends State<AddDevice> {
   @override
   Widget build(BuildContext context) {
 
-    IO.Socket socket = IO.io('http://192.168.1.139:5000', <String, dynamic>{
+    IO.Socket socket = IO.io(Configs.server_ip, <String, dynamic>{
       'transports': ['websocket'],
     });
 
